@@ -5,7 +5,9 @@ from bs4 import BeautifulSoup, UnicodeDammit
 from datetime import datetime, timedelta
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler, Stream, API
+import sys
 
+args = sys.argv
 # Load keys and news sources
 with open('secrets.json', 'r') as f:
     keys = json.loads(f.read())
@@ -26,7 +28,8 @@ def getBody(url):
             article['article'] = BeautifulSoup(article['article']).text
             return article
         else:
-            print datetime.now(), " failed to fetch ", url
+            if "verbose" in args:
+                print datetime.now(), " failed to fetch ", url
             return None
 
 # Listen to Twitter for new articles and save the articles to a jsonlines file.
@@ -48,7 +51,8 @@ class NewsListener(StreamListener):
                     article = getBody(r.url)
                     with open("news.jsonl", "a") as out:
                         out.write(json.dumps(article) + "\n")
-                    print datetime.now(), " fetched ", r.url
+                    if "verbose" in args:
+                        print datetime.now(), " fetched ", r.url
         except:
             pass
 
