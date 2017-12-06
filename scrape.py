@@ -6,13 +6,19 @@ from datetime import datetime, timedelta
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler, Stream, API
 
+# Load keys and news sources
+with open('secrets.json', 'r') as f:
+    keys = json.loads(f.read())
+
+with open("sources") as f:
+    pubs = f.readlines()
 
 
 # Use embed.rocks API to process raw html
 def getBody(url):
     url = ('https://api.embed.rocks/api/?'
            'url={}'
-           '&key={}'.format(url, embed_rocks_key))
+           '&key={}'.format(url, keys['embed_rocks']))
     r = requests.get(url)
     if r.ok:
         article = json.loads(r.content)
@@ -25,6 +31,9 @@ def getBody(url):
 
 # Listen to Twitter for new articles and save the articles to a jsonlines file.
 class NewsListener(StreamListener):
+    def set_auth(self, auth):
+        self.api = API(auth)
+
     def on_status(self, status):
         try:
             for u in status.entities['urls']:
@@ -48,29 +57,15 @@ class NewsListener(StreamListener):
 
 if __name__ == '__main__':
 
-    # Load keys and news sources
-    with open("keys") as f:
-        keys = f.readlines()
-
-    with open("sources") as f:
-        pubs = f.readlines()
-        
-    embed_rocks_key = keys[0]
-    #twitter
-    consumer_key = keys[1]
-    consumer_secret = keys[2]
-    access_token = keys[3]
-    access_token_secret = keys[4]
-
-    #This handles Twitter authentication and the connection to Twitter Streaming API
+    #This handles Twitter authetification and the connection to Twitter Streaming API
     # Auth to Twitter
-    auth = OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_token, access_token_secret)
-    api = API(auth)
-
+    auth = OAuthHandler(keys["consumer_key"], keys["consumer_secret"])
+    auth.set_access_token(keys["access_token"], keys["access_token_secret"])
+    
     # Run the twitter streaming API
     newsListener = NewsListener()
-    stream = Stream(auth = api.auth, listener=newsListener)
+    newsListener.set_auth(auth)
+    stream = Stream(auth, listener=newsListener)
     stream.userstream(pubs)
 
 
