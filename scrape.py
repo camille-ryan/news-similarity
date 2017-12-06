@@ -23,7 +23,7 @@ access_token_secret = keys[4]
 # Auth to Twitter
 auth = OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
-api = tweepy.API(auth)
+api = API(auth)
 
 # Use embed.rocks API to process raw html
 def getBody(url):
