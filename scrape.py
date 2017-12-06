@@ -40,7 +40,7 @@ def getBody(url):
             return None
 
 # Listen to Twitter for new articles and save the articles to a jsonlines file.
-class NewsListener(tweepy.StreamListener):
+class NewsListener(StreamListener):
     def on_status(self, status):
         try:
             for u in status.entities['urls']:
