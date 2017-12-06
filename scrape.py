@@ -6,19 +6,6 @@ from datetime import datetime, timedelta
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler, Stream, API
 
-# Load keys and news sources
-with open("keys") as f:
-    keys = f.readlines()
-
-with open("sources") as f:
-    pubs = f.readlines()
-    
-embed_rocks_key = keys[0]
-#twitter
-consumer_key = keys[1]
-consumer_secret = keys[2]
-access_token = keys[3]
-access_token_secret = keys[4]
 
 
 # Use embed.rocks API to process raw html
@@ -61,7 +48,21 @@ class NewsListener(StreamListener):
 
 if __name__ == '__main__':
 
-    #This handles Twitter authetification and the connection to Twitter Streaming API
+    # Load keys and news sources
+    with open("keys") as f:
+        keys = f.readlines()
+
+    with open("sources") as f:
+        pubs = f.readlines()
+        
+    embed_rocks_key = keys[0]
+    #twitter
+    consumer_key = keys[1]
+    consumer_secret = keys[2]
+    access_token = keys[3]
+    access_token_secret = keys[4]
+
+    #This handles Twitter authentication and the connection to Twitter Streaming API
     # Auth to Twitter
     auth = OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
