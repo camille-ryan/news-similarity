@@ -20,10 +20,6 @@ consumer_secret = keys[2]
 access_token = keys[3]
 access_token_secret = keys[4]
 
-# Auth to Twitter
-auth = OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret)
-api = API(auth)
 
 # Use embed.rocks API to process raw html
 def getBody(url):
@@ -61,7 +57,19 @@ class NewsListener(StreamListener):
             pass
 
 
-# Run the twitter streaming API
-newsListener = NewsListener()
-stream = Stream(auth = api.auth, listener=newsListener)
-stream.userstream(pubs)
+
+
+if __name__ == '__main__':
+
+    #This handles Twitter authetification and the connection to Twitter Streaming API
+    # Auth to Twitter
+    auth = OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    api = API(auth)
+
+    # Run the twitter streaming API
+    newsListener = NewsListener()
+    stream = Stream(auth = api.auth, listener=newsListener)
+    stream.userstream(pubs)
+
+
