@@ -62,5 +62,5 @@ class NewsListener(StreamListener):
 
 # Run the twitter streaming API
 newsListener = NewsListener()
-stream = tweepy.Stream(auth = api.auth, listener=newsListener)
+stream = Stream(auth = api.auth, listener=newsListener)
 stream.userstream(pubs)
